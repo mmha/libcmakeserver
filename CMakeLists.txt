@@ -17,13 +17,15 @@ add_library(cmakeserver::cmakeserver ALIAS cmakeserver)
 target_include_directories(cmakeserver INTERFACE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
     $<INSTALL_INTERFACE:include>)
-target_compile_features(cmakeserver INTERFACE cxx_std_20)
+target_compile_features(cmakeserver INTERFACE cxx_std_17)
 target_compile_definitions(cmakeserver INTERFACE BOOST_THREAD_VERSION=5)
 target_link_libraries(cmakeserver INTERFACE
     Boost::boost
     Boost::system
     Boost::thread
-    cmakeserver::Coroutines)
+	cmakeserver::Coroutines
+	c++
+	c++abi)
 
 enable_testing()
 add_subdirectory(test)
