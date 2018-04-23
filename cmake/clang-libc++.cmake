@@ -1,0 +1,2 @@
+set(CMAKE_CXX_COMPILER_ARG1 "-stdlib=libc++")
+list(APPEND CMAKE_CXX_IMPLICIT_LINK_LIBRARIES -stdlib=libc++)
