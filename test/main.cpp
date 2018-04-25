@@ -16,22 +16,7 @@ boost::future<void> say(std::string str, std::chrono::duration<R, P> d, io_servi
 
 	co_await async_await(timer, d);
 	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
-	co_await async_await(timer, d);
-	std::cout << str;
+
 }
 
 namespace {
@@ -44,7 +29,13 @@ namespace {
 		co_await tcp_acceptor.async_accept(socket, use_boost_future);
 		std::cout << "after accept\n";
 
-		[[maybe_unused]] auto transmitted = co_await async_cmake_send(socket, "SX2;00;STE;00;24;F;0;2;25;2000;\r\n");
+		protocol::hello h {
+			.supportedProtocolVersions = {
+				{.major = 1, .minor = 0, .isExperimental = false},
+				{.major = 1, .minor = 2, .isExperimental = true}
+			}
+		};
+		[[maybe_unused]] auto transmitted = co_await async_cmake_send(socket, to_string(h));
 		std::cout << "after send\n";
 
 		co_return;
@@ -73,8 +64,10 @@ namespace {
 
 int main() {
 	io_service service;
-	say("ping\n", 50ms, service);
-	say("    pong\n", 100ms, service);
+	protocol::globalSettings g {
+		.buildDirectory = "."
+	};
+	say(to_string(g), 50ms, service);
 
 	rw_test_server(service);
 	rw_test_client(service);
