@@ -7,7 +7,7 @@ It makes use of modern C++17 features and the Coroutines TS.
 Requirements
 ------------
 - clang 6.0
-- CMake 3.11
+- CMake 3.12
 - Boost >=1.67.0
 - optional: conan
 
