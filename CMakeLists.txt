@@ -7,13 +7,18 @@ if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CMakePackageConfigHelpers)
+include(GenerateExportHeader)
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
 add_subdirectory(libcmakeserver)
 
 enable_testing()
 add_subdirectory(test)
 
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
 	"${CMAKE_CURRENT_BINARY_DIR}/cmakeserverConfigVersion.cmake"
 	VERSION ${cmakeserver_VERSION_MAJOR}

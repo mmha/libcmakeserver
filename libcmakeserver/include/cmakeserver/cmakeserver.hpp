@@ -1,13 +1,16 @@
 #pragma once
 #include "cmake_protocol.hpp"
 #include "coroutines.hpp"
+#include "ipc.hpp"
 #include "use_boost_future.hpp"
-#include <boost/asio.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/read_until.hpp>
+#include <boost/asio/write.hpp>
 
 namespace cmakeserver {
 	template <typename AsyncReadStream, typename Allocator>
 	auto async_read_line(AsyncReadStream &s, boost::asio::basic_streambuf<Allocator> &b) {
-		return boost::asio::async_read_until(s, b, protocol::epilogue, use_boost_future);
+		return boost::asio::async_read_until(s, b, '\n', use_boost_future);
 	}
 
 	template <typename AsyncWriteStream, typename ConstBufferSequence>
@@ -25,9 +28,9 @@ namespace cmakeserver {
 
 	template <typename AsyncWriteStream>
 	auto async_cmake_send(AsyncWriteStream &s, std::string const &str) -> boost::future<bool> {
-		auto transmitted = co_await async_write(s, boost::asio::buffer(protocol::prologue));
-		transmitted += co_await async_write(s, boost::asio::buffer(str));
-		transmitted += co_await async_write(s, boost::asio::buffer(protocol::epilogue));
-		co_return transmitted == (protocol::prologue.size() + str.size() + protocol::epilogue.size());
+		async_write(s, boost::asio::buffer(protocol::prologue));
+		async_write(s, boost::asio::buffer(str));
+		async_write(s, boost::asio::buffer(protocol::epilogue));
+		co_return true;    // transmitted == (protocol::prologue.size() + str.size() + protocol::epilogue.size());
 	}
 }    // namespace cmakeserver

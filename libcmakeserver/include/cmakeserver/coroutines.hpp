@@ -61,7 +61,11 @@ auto operator co_await(boost::future<R> &&f) {
 	struct awaiter {
 		boost::future<R> &&input;
 		boost::future<R> output;
-		bool await_ready() const {
+		bool await_ready() {
+			if(input.is_ready()) {
+				output = std::move(input);
+				return true;
+			}
 			return false;
 		}
 		auto await_resume() {
@@ -74,7 +78,7 @@ auto operator co_await(boost::future<R> &&f) {
 			});
 		}
 	};
-	return awaiter{std::forward<boost::future<R>>(f), {}};
+	return awaiter{static_cast<boost::future<R> &&>(f), {}};
 }
 
 namespace cmakeserver {
