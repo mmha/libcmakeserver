@@ -4,7 +4,7 @@ class CMakeServerConan(ConanFile):
     name = "libcmakeserver"
     version = "0.1"
     settings = "os", "compiler", "build_type", "arch"
-    requires = "boost/[>=1.67]@conan/stable", "jsonformoderncpp/3.1.2@vthiery/stable"
+    requires = "boost/[>=1.67]@conan/stable", "jsonformoderncpp/3.1.2@vthiery/stable", "doctest/1.2.6@bincrafters/stable"
     generators = "cmake"
     no_copy_source = True
     exports_sources = "*", "!build/*", "!.git/*"
