@@ -10,8 +10,8 @@ add_library(cmakeserver
     ../include/cmakeserver/use_boost_future.hpp
     cmake_protocol.cpp
     ipc.cpp
-    $<$<BOOL:${WIN32}>:ipc_win32.cpp>)
-    #$<$<BOOL:${UNIX}>:ipc_posix.cpp>)
+    $<$<BOOL:${WIN32}>:ipc_win32.cpp>
+    $<$<BOOL:${UNIX}>:ipc_posix.cpp>)
 add_library(cmakeserver::cmakeserver ALIAS cmakeserver)
 
 set(binary_include_dir "${CMAKE_CURRENT_BINARY_DIR}/include/")

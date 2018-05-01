@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 namespace {
 	boost::future<void> rw_test_client(asio::io_service &io, std::string_view build_dir) {
 		system_timer timer(io);
-		auto [pipe, name] = open_temporary_pipe(io);
+		auto [name, pipe] = open_temporary_pipe(io);
 		auto cmake = spawn_cmake_server(name);
 		co_await async_await(timer, 50ms);
 		auto endpoint = boost::asio::local::stream_protocol::endpoint{name};

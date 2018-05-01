@@ -5,16 +5,15 @@
 #include <string_view>
 
 namespace cmakeserver {
-	struct tmp_pipe {
-		boost::asio::local::stream_protocol::socket pipe;
+	struct temp_pipe {
+		// The order of the members matters because of a bug in clang.
+		// If the order is swapped, the destructor of the socket won't
+		// be generated
 		std::string name;
+		boost::asio::local::stream_protocol::socket pipe;
 	};
 
-	inline tmp_pipe open_temporary_pipe(boost::asio::io_context &context) {
-		using namespace boost::asio::local;
-		auto const generated_name = tmpnam(nullptr);
-		return {.name = generated_name, .pipe = stream_protocol::socket{context}};
-	}
+	temp_pipe open_temporary_pipe(boost::asio::io_context &context);
 
 	boost::process::child spawn_cmake_server(std::string_view pipe);
 }    // namespace cmakeserver
