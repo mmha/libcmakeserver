@@ -1,6 +1,6 @@
 #pragma once
+#include "detail/filesystem.hpp"
 #include <cmakeserver/export.h>
-#include <experimental/filesystem>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
 #include <string>
@@ -26,8 +26,8 @@ namespace cmakeserver::protocol {
 
 		struct handshake {
 			version protocolVersion;
-			std::optional<std::experimental::filesystem::path> sourceDirectory;
-			std::experimental::filesystem::path buildDirectory;
+			std::optional<fs::path> sourceDirectory;
+			fs::path buildDirectory;
 			std::optional<std::string> generator;
 			std::optional<std::string> extraGenerator;
 			std::optional<std::string> platform;
@@ -35,14 +35,14 @@ namespace cmakeserver::protocol {
 		};
 
 		struct globalSettings {
-			std::experimental::filesystem::path buildDirectory;
+			fs::path buildDirectory;
 			int capabilities;
 			bool checkSystemVars;
 			std::string extraGenerator;
 			std::string generator;
 			bool debugOutput;
 			std::string inReplyTo;
-			std::experimental::filesystem::path sourceDirectory;
+			fs::path sourceDirectory;
 			bool trace;
 			bool traceExpand;
 			bool warnUninitialized;
@@ -77,7 +77,7 @@ namespace cmakeserver::protocol {
 		};
 
 		struct fileChange : signal {
-			std::experimental::filesystem::path path;
+			fs::path path;
 			std::vector<std::string> properties;    // TODO enum class {change, rename}
 		};
 

@@ -17,5 +17,16 @@ TEST_CASE("protocol::version") {
 			};
 			CHECK(uut == expected);
 		}
+		SUBCASE("") {
+			auto const v = version{.major = 123, .minor = 0};
+			nlohmann::json uut;
+			to_json(uut, v);
+			auto const expected = nlohmann::json{
+			    {"major", 123},
+			    {"minor", 0},
+			    {"type", "version"},
+			};
+			CHECK(uut == expected);
+		}
 	}
 }

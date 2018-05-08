@@ -3,6 +3,7 @@ find_package(Coroutines REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 add_library(cmakeserver
+    ../include/cmakeserver/detail/filesystem.hpp
     ../include/cmakeserver/cmake_protocol.hpp
     ../include/cmakeserver/cmakeserver.hpp
     ../include/cmakeserver/coroutines.hpp
@@ -10,8 +11,10 @@ add_library(cmakeserver
     ../include/cmakeserver/use_boost_future.hpp
     cmake_protocol.cpp
     ipc.cpp
-    $<$<BOOL:${WIN32}>:ipc_win32.cpp>
-    $<$<BOOL:${UNIX}>:ipc_posix.cpp>)
+    $<$<BOOL:${WIN32}>:../include/cmakeserver/win32/ipc.hpp>
+    $<$<BOOL:${WIN32}>:win32/ipc_win32.cpp>
+    $<$<BOOL:${UNIX}>:../include/cmakeserver/posix/ipc.hpp>
+    $<$<BOOL:${UNIX}>:posix/ipc.cpp>)
 add_library(cmakeserver::cmakeserver ALIAS cmakeserver)
 
 set(binary_include_dir "${CMAKE_CURRENT_BINARY_DIR}/include/")
