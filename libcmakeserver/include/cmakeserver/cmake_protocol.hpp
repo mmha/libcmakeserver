@@ -16,8 +16,8 @@ namespace cmakeserver::protocol {
 		struct message {};
 
 		struct version {
-			int major;
-			int minor;
+			int major = 0;
+			int minor = 0;
 			std::optional<bool> isExperimental;
 		};
 
@@ -37,18 +37,18 @@ namespace cmakeserver::protocol {
 
 		struct globalSettings {
 			fs::path buildDirectory;
-			int capabilities;
-			bool checkSystemVars;
+			int capabilities = 0;
+			bool checkSystemVars = false;
 			std::string extraGenerator;
 			std::string generator;
-			bool debugOutput;
+			bool debugOutput = false;
 			std::string inReplyTo;
 			fs::path sourceDirectory;
-			bool trace;
-			bool traceExpand;
-			bool warnUninitialized;
-			bool warnUnused;
-			bool warnUnusedCli;
+			bool trace = false;
+			bool traceExpand = false;
+			bool warnUninitialized = false;
+			bool warnUnused = false;
+			bool warnUnusedCli = false;
 		};
 
 		struct configure {
@@ -68,9 +68,9 @@ namespace cmakeserver::protocol {
 
 		struct progress {
 			std::string progressMessage;
-			int progressMinimum;
-			int progressMaximum;
-			int progressCurrent;
+			int progressMinimum = 0;
+			int progressMaximum = 0;
+			int progressCurrent = 0;
 		};
 
 		struct signal {
