@@ -35,7 +35,8 @@ target_link_libraries(cmakeserver PUBLIC
     Boost::thread
     Boost::filesystem
     cmakeserver::Coroutines
-    CONAN_PKG::jsonformoderncpp)
+    CONAN_PKG::jsonformoderncpp
+    c++ c++abi c++experimental)
 
 install(TARGETS cmakeserver EXPORT cmakeserver
     RUNTIME DESTINATION bin

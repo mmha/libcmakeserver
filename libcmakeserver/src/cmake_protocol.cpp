@@ -65,6 +65,18 @@ namespace nlohmann {
 			}
 		}
 	};
+
+	template <>
+	struct adl_serializer<cmakeserver::fs::path> {
+		static void to_json(json &j, cmakeserver::fs::path const &p) {
+			j = p.c_str();
+		}
+
+		static void from_json(json const &j, cmakeserver::fs::path &p) {
+			std::string str = j;
+			p.assign(std::move(str));
+		}
+	};
 }    // namespace nlohmann
 
 template <typename T>
@@ -73,31 +85,57 @@ constexpr bool is_optional = false;
 template <typename T>
 constexpr bool is_optional<std::optional<T>> = true;
 
-#define CMAKESERVER_ADL_OVERLOAD_IMPL(type)                                      \
-	std::string to_string(type const &val) {                                     \
-		nlohmann::json res;                                                      \
-		to_json(res, val);                                                       \
-		return res.dump();                                                       \
-	}                                                                            \
-	void to_json(nlohmann::json &j, type const &val) {                           \
-		using namespace boost::hana;                                             \
-		j["type"] = type_name_string<type>.data();                               \
-		for_each(val, fuse([&](auto name, auto member) {                         \
-			         if constexpr(is_optional<std::decay_t<decltype(member)>>) { \
-				         if(!member) {                                           \
-					         return;                                             \
-				         }                                                       \
-			         }                                                           \
-			         j[to<char const *>(name)] = member;                         \
-		         }));                                                            \
-	}                                                                            \
-	void to_json(nlohmann::json &j, std::optional<type> const &val) {            \
-		if(val) {                                                                \
-			to_json(j, *val);                                                    \
-		}                                                                        \
-	}                                                                            \
-	void from_json(nlohmann::json const &, type const &);                        \
-	void from_json(nlohmann::json const &, std::optional<type> const &);
+#define CMAKESERVER_ADL_OVERLOAD_IMPL(type)                                                                          \
+	std::string to_string(type const &val) {                                                                         \
+		nlohmann::json res;                                                                                          \
+		to_json(res, val);                                                                                           \
+		return res.dump();                                                                                           \
+	}                                                                                                                \
+	std::ostream &operator<<(std::ostream &os, type const &val) {                                                    \
+		nlohmann::json j;                                                                                            \
+		to_json(j, val);                                                                                             \
+		return os << j.dump(4);                                                                                      \
+	}                                                                                                                \
+	void to_json(nlohmann::json &j, type const &val) {                                                               \
+		using namespace boost::hana;                                                                                 \
+		j["type"] = type_name_string<type>.data();                                                                   \
+		for_each(val, fuse([&](auto name, auto member) {                                                             \
+			         if constexpr(is_optional<std::decay_t<decltype(member)>>) {                                     \
+				         if(!member) {                                                                               \
+					         return;                                                                                 \
+				         }                                                                                           \
+			         }                                                                                               \
+			         j[to<char const *>(name)] = member;                                                             \
+		         }));                                                                                                \
+	}                                                                                                                \
+	void to_json(nlohmann::json &j, std::optional<type> const &val) {                                                \
+		if(val) {                                                                                                    \
+			to_json(j, *val);                                                                                        \
+		}                                                                                                            \
+	}                                                                                                                \
+	void from_json(nlohmann::json const &j, type &val) {                                                             \
+		using namespace boost::hana;                                                                                 \
+		constexpr auto accessor = accessors<type>();                                                                 \
+		auto const names = transform(accessor, first);                                                               \
+		auto members = transform(accessor, second);                                                                  \
+		auto refs = transform(members, [&](auto acc) { return std::ref(acc(val)); });                                \
+		for_each(zip(names, refs), fuse([&](auto name, auto ref) {                                                   \
+			         if constexpr(is_optional<std::decay_t<decltype(ref.get())>>) {                                  \
+				         if(auto subnode = j.find(to<char const *>(name)); subnode != j.end()) {                     \
+					         ref.get() = subnode->template get<std::decay_t<decltype(ref.get())>>();                 \
+				         }                                                                                           \
+			         } else {                                                                                        \
+				         ref.get() = j.at(to<char const *>(name)).template get<std::decay_t<decltype(ref.get())>>(); \
+			         }                                                                                               \
+		         }));                                                                                                \
+	}                                                                                                                \
+	void from_json(nlohmann::json const &j, std::optional<type> &val) {                                              \
+		from_json(j, *val);                                                                                          \
+	}                                                                                                                \
+	bool operator==(type const &lhs, type const &rhs) {                                                              \
+		using namespace boost::hana;                                                                                 \
+		return members(lhs) == members(rhs);                                                                         \
+	}
 
 
 namespace cmakeserver::protocol {

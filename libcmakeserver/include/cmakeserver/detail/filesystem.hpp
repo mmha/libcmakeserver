@@ -9,4 +9,6 @@ namespace cmakeserver {
 namespace cmakeserver {
 	namespace fs = std::experimental::filesystem;
 }
+#else
+#error "<filesystem> header not found"
 #endif

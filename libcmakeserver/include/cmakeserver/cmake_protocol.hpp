@@ -1,6 +1,7 @@
 #pragma once
 #include "detail/filesystem.hpp"
 #include <cmakeserver/export.h>
+#include <iostream>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
 #include <string>
@@ -81,12 +82,14 @@ namespace cmakeserver::protocol {
 			std::vector<std::string> properties;    // TODO enum class {change, rename}
 		};
 
-#define CMAKESERVER_ADL_OVERLOADS(type)                                             \
-	std::string CMAKESERVER_EXPORT to_string(type const &);                         \
-	void CMAKESERVER_EXPORT to_json(nlohmann::json &, type const &);                \
-	void CMAKESERVER_EXPORT to_json(nlohmann::json &, std::optional<type> const &); \
-	void CMAKESERVER_EXPORT from_json(nlohmann::json const &, type const &);        \
-	void CMAKESERVER_EXPORT from_json(nlohmann::json const &, std::optional<type> const &);
+#define CMAKESERVER_ADL_OVERLOADS(type)                                               \
+	std::string CMAKESERVER_EXPORT to_string(type const &);                           \
+	std::ostream &operator<<(std::ostream &os, type const &t);                        \
+	void CMAKESERVER_EXPORT to_json(nlohmann::json &, type const &);                  \
+	void CMAKESERVER_EXPORT to_json(nlohmann::json &, std::optional<type> const &);   \
+	void CMAKESERVER_EXPORT from_json(nlohmann::json const &, type &);                \
+	void CMAKESERVER_EXPORT from_json(nlohmann::json const &, std::optional<type> &); \
+	bool CMAKESERVER_EXPORT operator==(type const &lhs, type const &rhs);
 
 		CMAKESERVER_ADL_OVERLOADS(message)
 		CMAKESERVER_ADL_OVERLOADS(version)
