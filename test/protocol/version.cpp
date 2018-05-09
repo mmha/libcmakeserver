@@ -59,7 +59,11 @@ TEST_CASE("protocol::version") {
 			    {"major", 123},
 			    {"type", "version"},
 			};
-			auto const expected = version{.major = 123, .minor = 0};
+			CHECK_THROWS(from_json(j, uut));
+		}
+		SUBCASE("empty") {
+			auto uut = version{};
+			nlohmann::json const j;
 			CHECK_THROWS(from_json(j, uut));
 		}
 	}
