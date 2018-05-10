@@ -14,6 +14,7 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
+add_subdirectory(doc)
 add_subdirectory(libcmakeserver)
 
 enable_testing()

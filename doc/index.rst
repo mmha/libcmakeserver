@@ -16,25 +16,42 @@ Requirements
 Building
 --------
 
-### Conan
-```bash
-conan create . user/channel --build missing
-```
+Conan
+~~~~~
 
-### CMake
+.. highlight:: bash
+.. code:: 
+
+	conan create . user/channel --build missing
+
+CMake
+~~~~~
 Build the library itself:
-```bash
-mkdir build
-cd build
-cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
-ninja install
-```
+
+.. highlight:: bash
+.. code::
+
+	mkdir build
+	cd build
+	cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
+	ninja install
+
 Use it in your project:
-```cmake
-find_package(cmakeserver REQUIRED)
-target_link_libraries(myapp PRIVATE cmakeserver::cmakeserver)
-```
+
+.. highlight:: cmake
+.. code::
+
+	find_package(cmakeserver REQUIRED)
+	target_link_libraries(myapp PRIVATE cmakeserver::cmakeserver)
 
 License
 -------
 This project is licensed under the Boost Software License v1.0.
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 3
+
+   API/index
