@@ -9,7 +9,7 @@ if(Doxygen_FOUND)
 	else()
 	    set(USE_DOT "NO")
 	endif()
-	configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "Doxyfile" @ONLY)
+	configure_file("${PROJECT_SOURCE_DIR}/Doxyfile.in" "${PROJECT_BINARY_DIR}/Doxyfile" @ONLY)
 	add_custom_target(doxy_doc
 	    Doxygen::doxygen  "${PROJECT_BINARY_DIR}/Doxyfile"
 	    SOURCES           "${PROJECT_BINARY_DIR}/Doxyfile"
