@@ -9,4 +9,5 @@
 
 namespace cmakeserver {
 	boost::process::child spawn_cmake_server(std::string_view pipe);
+	fs::path make_temporary_filename();
 }    // namespace cmakeserver
