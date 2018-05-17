@@ -13,8 +13,8 @@ add_library(cmakeserver
     ipc.cpp
     $<$<BOOL:${WIN32}>:../include/cmakeserver/win32/ipc.hpp>
     $<$<BOOL:${WIN32}>:win32/ipc_win32.cpp>
-    $<$<BOOL:${UNIX}>:../include/cmakeserver/posix/ipc.hpp>
-    $<$<BOOL:${UNIX}>:posix/ipc.cpp>)
+    $<$<BOOL:${UNIX}>:../include/cmakeserver/linux/ipc.hpp>
+    $<$<BOOL:${UNIX}>:linux/ipc.cpp>)
 add_library(cmakeserver::cmakeserver ALIAS cmakeserver)
 
 set(binary_include_dir "${CMAKE_CURRENT_BINARY_DIR}/include/")
